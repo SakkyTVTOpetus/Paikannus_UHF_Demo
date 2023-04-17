@@ -19,6 +19,7 @@ namespace RfidSample
             public sbyte rssi;
             public short phaseDiff;
             public uint timesSeen;
+            public int lastseenTick;
         }
         public class ByteArrayComparer : IEqualityComparer<byte[]>
         {
@@ -37,6 +38,8 @@ namespace RfidSample
                 return key.Sum(b => b);
             }
         }
+
+        RestClient _linuxEduClient;
 
         readonly Plugin _rpc;
         readonly NurApi _nur;
@@ -69,6 +72,17 @@ namespace RfidSample
                 _nur.InventoryStreamEvent += new EventHandler<NurApi.InventoryStreamEventArgs>(OnInventoryStreamEvent);
             }
             catch (NurApiException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw ex;
+            }
+
+            try
+            {
+                Console.WriteLine("Initializing RestClient for linuxedu-server");
+                _linuxEduClient = new RestClient("http://linuxedu.koulutus.kynet.fi/~markku.kynsijarvi@sakky.fi/PHPBackendTest/backendTester.php");
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 throw ex;
@@ -324,6 +338,7 @@ namespace RfidSample
                             value.antennaId = tag.antennaId;
                             value.rssi = tag.rssi;
                             value.phaseDiff = (short)tag.timestamp;
+                            value.lastseenTick = Environment.TickCount;
                             value.timesSeen += 1;
                         }
                         else
@@ -333,8 +348,14 @@ namespace RfidSample
                                 antennaId = tag.antennaId,
                                 rssi = tag.rssi,
                                 phaseDiff = (short)tag.timestamp,
+                                lastseenTick = Environment.TickCount,
                                 timesSeen = 0
                             };
+
+                            string newTag = "{ \"EPC\": \"" + tag.GetEpcString() + "\"}";
+                            string newTagResponse = _linuxEduClient.Post("tags", newTag);
+                            Console.WriteLine("Added new tag seen response: " + newTagResponse);
+
                         }
                     }
                     // Clear NurApi internal tag storage so that we only get new tags next next time
