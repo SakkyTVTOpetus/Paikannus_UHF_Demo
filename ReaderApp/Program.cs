@@ -352,7 +352,7 @@ namespace RfidSample
                                 timesSeen = 0
                             };
 
-                            string newTag = "{ \"EPC\": \"" + tag.GetEpcString() + "\"}";
+                            string newTag = "{ \"epc\": \"" + tag.GetEpcString() + "\", \"antenna\": " + tag.antennaId + ", \"rssi\": "+tag.rssi+"}";
                             string newTagResponse = _linuxEduClient.Post("tags", newTag);
                             Console.WriteLine("Added new tag seen response: " + newTagResponse);
 

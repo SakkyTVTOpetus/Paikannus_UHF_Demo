@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 
 // Set the response header to JSON
 header('Content-Type: application/json');
@@ -30,8 +31,40 @@ switch ($method) {
         if ($resource === 'tags') {
             // Example: Create a tag-item combination
             // TODO: Code here to create new combination of EPC and actual item in DB
-            $response['message'] = 'New item created successfully';
-        } else {
+			// Read the raw POST data from the request body
+			$postData = file_get_contents('php://input');
+
+			// Convert the raw POST data to a PHP associative array
+			$postDataArray = json_decode($postData, true);
+
+			// Access the values from the POST data array
+			$epc = $postDataArray['epc'];
+			$antenna = $postDataArray['antenna'];
+			$rssi = $postDataArray['rssi'];
+			
+			//Establishing Connection with Server
+			$connection = mysqli_connect($server, $user, $pwd);
+			//Selecting Database from Server
+			$db = mysqli_select_db( $connection, $database);
+
+			$query = mysqli_query($connection, "INSERT INTO UHF_TagTable(epc, antenna, rssi) VALUES ('$epc', $antenna, $rssi)");
+
+			if($query == FALSE)
+			{
+				$response['message'] = "Data insertion failed, contact developer";
+			}
+			else
+			{
+				$response['message'] = 'Data Inserted successfully';
+			}        
+
+			//Closing Connection with Server
+
+			mysqli_close($connection);
+			
+        } 
+		else 
+		{
             http_response_code(404);
             $response['error'] = 'Resource not found';
         }
