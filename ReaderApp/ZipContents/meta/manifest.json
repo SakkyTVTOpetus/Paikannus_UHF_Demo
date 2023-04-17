@@ -1,0 +1,13 @@
+{
+  "name": "@APPNAME@",
+  "version": "@APPVERSION@",
+  "startup": {
+    "exec_start": "mono bin/@APPEXEC@",
+    "default_autostart": true,
+    "depends": {
+      "plugins": [
+        "mono-api-4.8"
+      ]
+    }
+  }
+}
