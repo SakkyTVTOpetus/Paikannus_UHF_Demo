@@ -71,6 +71,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>PowerShell -NoProfile -ExecutionPolicy unrestricted -file "$(ProjectDir)\..\fr22_vs_appziptool\build.ps1" "$(ProjectDir)\ZipContents" "$(ProjectName)" "$(TargetPath)" "$(TargetDir)\" "$(ProjectDir)\"</PostBuildEvent>
+    <PostBuildEvent>PowerShell -NoProfile -ExecutionPolicy unrestricted -file "$(ProjectDir)\..\Utilities\fr22_vs_appziptool\build.ps1" "$(ProjectDir)\ZipContents" "$(ProjectName)" "$(TargetPath)" "$(TargetDir)\" "$(ProjectDir)\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
