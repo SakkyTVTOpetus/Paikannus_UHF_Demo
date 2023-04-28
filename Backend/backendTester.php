@@ -46,7 +46,7 @@ switch ($method) {
 			$connection = mysqli_connect($server, $user, $pwd);
 			//Selecting Database from Server
 			$db = mysqli_select_db( $connection, $database);
-
+			
 			$query = mysqli_query($connection, "INSERT INTO UHF_TagTable(epc, antenna, rssi) VALUES ('$epc', $antenna, $rssi)");
 
 			if($query == FALSE)
